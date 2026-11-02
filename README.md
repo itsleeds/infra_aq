@@ -1,22 +1,21 @@
-# Historical Analysis of Coventry’s Cycle Network (2019-2026)
+# Historical Analysis of Coventry’s Cycle Network (2019-2025)
 Robin Lovelace
 2026-11-02
 
 # Introduction
 
 This repository provides a reproducible analysis of the growth of
-cycling infrastructure in Coventry from 2019 to 2026.
+cycling infrastructure in Coventry from 2019 to 2025.
 
 We compare a simple metric based solely on the `highway=cycleway`
 OpenStreetMap (OSM) tag with the multi-layered classification system
 implemented in the [`osmactive`](https://github.com/nptscot/osmactive) R
-package (and its high-performance Rust counterpart
-[`atf-lab/osmactive`](https://github.com/atf-lab/osmactive)).
+package.
 
-# Detailed Infrastructure Growth (2019–2026)
+# Detailed Infrastructure Growth (2019–2025)
 
 The following code chunk and plot show the annual growth of the Coventry
-cycle network across the specified years (`2019:2026`), broken down by
+cycle network across the specified years (`2019:2025`), broken down by
 `osmactive` infrastructure categories.
 
 ``` r
@@ -34,7 +33,7 @@ p_stacked = ggplot(stacked_data, aes(x = factor(year), y = length_km, fill = cyc
   geom_bar(stat = "identity", position = "stack") +
   scale_fill_manual(values = rev(get_palette_npt()), name = "Infrastructure Type") +
   labs(
-    title = "Coventry Cycle Network Growth by Type (2019-2026)",
+    title = "Coventry Cycle Network Growth by Type (2019-2025)",
     subtitle = "Annual historical snapshots classified using osmactive",
     y = "Total Length (km)",
     x = "Year"
@@ -49,7 +48,7 @@ ggsave("coventry_growth_chart.png", p_stacked, width = 8, height = 5, dpi = 150)
 ```
 
 ![Coventry Cycle Network Growth by Type
-(2019-2026).](https://github.com/itsleeds/infra_aq/releases/download/v0.1.0/coventry_growth_chart.png)
+(2019-2025).](https://github.com/itsleeds/infra_aq/releases/download/v0.1.0/coventry_growth_chart.png)
 
 ``` r
 summary_table = stacked_data |>
@@ -61,7 +60,7 @@ summary_table = stacked_data |>
   ) |>
   rename(Year = year)
 
-kable(summary_table, caption = "Classified cycling infrastructure length (km) in Coventry by year and type (2019-2026).")
+kable(summary_table, caption = "Classified cycling infrastructure length (km) in Coventry by year and type (2019-2025).")
 ```
 
 | Year | Segregated Track (wide) | Off Road Path | Segregated Track (narrow) | Shared Footway | Painted Cycle Lane | Total |
@@ -73,14 +72,13 @@ kable(summary_table, caption = "Classified cycling infrastructure length (km) in
 | 2023 | 0.48 | 15.61 | 7.00 | 2.70 | 5.69 | 31.47 |
 | 2024 | 0.48 | 16.47 | 8.62 | 2.54 | 5.10 | 33.20 |
 | 2025 | 0.80 | 16.58 | 7.96 | 6.80 | 5.10 | 37.23 |
-| 2026 | 0.70 | 20.31 | 5.40 | 9.05 | 4.18 | 39.64 |
 
 Classified cycling infrastructure length (km) in Coventry by year and
-type (2019-2026).
+type (2019-2025).
 
 ## Animated Growth Map
 
-The spatial expansion of Coventry’s cycling network across `2019:2026`
+The spatial expansion of Coventry’s cycling network across `2019:2025`
 is generated reproducibly below using `gganimate` and `gifski`:
 
 ``` r
@@ -98,7 +96,7 @@ p_anim = ggplot(anim_data) +
   transition_manual(display_year) +
   labs(
     title = "Coventry Cycle Network Growth: {current_frame}",
-    subtitle = "Year-by-year classified infrastructure (2019-2026)",
+    subtitle = "Year-by-year classified infrastructure (2019-2025)",
     color = "Infrastructure Type",
     caption = "Data: OpenStreetMap contributors (Geofabrik January snapshots)"
   ) +
@@ -123,13 +121,13 @@ anim_save("coventry_historical_growth.gif", animation = anim)
 ```
 
 ![Animation showing Coventry Cycle Network Growth from 2019 to
-2026.](https://github.com/itsleeds/infra_aq/releases/download/v0.1.0/coventry_historical_growth.gif)
+2025.](https://github.com/itsleeds/infra_aq/releases/download/v0.1.0/coventry_historical_growth.gif)
 
 # Simple Metric (`highway=cycleway`) and National Comparison
 
 A common approach to quantifying cycling infrastructure is to filter for
 segments where the `highway` tag is explicitly set to `cycleway`. Below
-we compare Coventry’s `highway=cycleway` growth from 2019 to 2026
+we compare Coventry’s `highway=cycleway` growth from 2019 to 2025
 against the national trend for England (indexed to 2019 = 100).
 
 ``` r
@@ -158,7 +156,7 @@ p_comp = ggplot(comparison, aes(x = year, y = index, color = region)) +
   scale_x_continuous(breaks = years) +
   scale_y_continuous(limits = c(95, NA)) +
   labs(
-    title = "Relative Growth of Cycling Infrastructure: Coventry vs. England (2019-2026)",
+    title = "Relative Growth of Cycling Infrastructure: Coventry vs. England (2019-2025)",
     subtitle = "Index (2019 = 100) based on highway=cycleway length",
     y = "Growth Index (2019 = 100)",
     x = "Year",
@@ -170,38 +168,10 @@ ggsave("coventry_vs_england.png", p_comp, width = 8, height = 5, dpi = 150)
 ```
 
 ![Relative Growth of Cycling Infrastructure: Coventry vs. England
-(2019-2026).](https://github.com/itsleeds/infra_aq/releases/download/v0.1.0/coventry_vs_england.png)
+(2019-2025).](https://github.com/itsleeds/infra_aq/releases/download/v0.1.0/coventry_vs_england.png)
 
-Between 2019 and 2026, England’s `highway=cycleway` network grew by
-approximately 38%, whereas Coventry’s dedicated `highway=cycleway`
-network grew by 159% (from 12.8 km in 2019 to 33 km in 2026). Across all
-`osmactive` cycle infrastructure categories, Coventry’s network expanded
-by 50% (from 26.4 km in 2019 to 39.6 km in 2026).
-
-# Performance Comparison: R `osmactive` vs Rust `atf-lab/osmactive`
-
-We also benchmarked the historical extraction and classification
-pipeline using the new Rust CLI crates (`osmget` and
-`atf-lab/osmactive`):
-
-- **PBF Extraction (`osmget extract` vs Python `pyosmium` /
-  `osmextract`)**: Extracting the 5,865–9,886 highway ways intersecting
-  the Coventry bounding box from a ~50 MB West Midlands `.osm.pbf` file
-  into GeoParquet takes **~1.9–2.1 seconds** per year in pure Rust using
-  `osmget extract --profile all --preserve-other-tags --bbox -1.56,52.40,-1.45,52.43 --intersects`.
-- **Infrastructure Classification (`osmactive` R package vs Rust
-  `osmactive`)**:
-  - Running the R `osmactive` pipeline (`get_cycling_network()`,
-    `get_driving_network()`, `distance_to_road()`,
-    `classify_cycle_infrastructure()`) on the extracted Coventry network
-    takes **~0.6–1.4 seconds** per year once the ways are in memory.
-  - Running the Rust `atf-lab/osmactive` pipeline (`osmactive access` in
-    **~0.08 s** + `osmactive cycle-infra` in **~4.1 s** including
-    England-wide ONS Built-up Areas spatial join and 5 m point-sampled
-    road distance calculation) processes the full GeoParquet table
-    directly and additionally computes UK LTN 1/20 and Cycling by Design
-    Level of Service (`los`).
-- **Combined Fast Workflow**: Using `osmget` (Rust) to slice regional
-  historical `.osm.pbf` files in ~2 seconds per snapshot and feeding the
-  resulting geometries into `osmactive` reduces multi-year historical
-  processing for a city from minutes to a few seconds.
+Between 2019 and 2025, England’s `highway=cycleway` network grew by
+approximately 33%, whereas Coventry’s dedicated `highway=cycleway`
+network grew by 114% (from 12.8 km in 2019 to 27.4 km in 2025). Across
+all `osmactive` cycle infrastructure categories, Coventry’s network
+expanded by 41% (from 26.4 km in 2019 to 37.2 km in 2025).

@@ -1,4 +1,4 @@
-# Download and classify historical Coventry cycle infrastructure (2019-2026)
+# Download and classify historical Coventry cycle infrastructure (2019-2025)
 # Reproduces data-raw/coventry-cycleways-{year}.gpkg using Geofabrik West Midlands
 # historical PBF snapshots and the R osmactive package.
 
@@ -6,7 +6,7 @@ library(osmactive)
 library(sf)
 library(dplyr)
 
-years = 2019:2026
+years = 2019:2025
 out_dir = "data-raw"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
