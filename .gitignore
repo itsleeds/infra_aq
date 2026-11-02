@@ -1,0 +1,12 @@
+*.gpkg
+*.rds
+*.gif
+*.png
+*.html
+README_files/
+*_files/
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.quarto/
